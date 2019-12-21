@@ -93,6 +93,9 @@ DWORD WINAPI Job::ReadDriveThreadFunction(
     auto ret = readDiskDrive.Read(p->totalBlocks);
     if (ret != 0) {
         printf("\nerror %d\n", ret);
+        p->compressMgr.Stop();
+        p->computeHash.Stop();
+        p->writePayload.Stop();
     }
     return ret;
 }
@@ -118,6 +121,9 @@ DWORD WINAPI Job::CompressThreadFunction(
     auto ret = compressMgr.Compress();
     if (ret != 0) {
         printf("\nerror %d\n", ret);
+        p->readDiskDrive.Stop();
+        p->computeHash.Stop();
+        p->writePayload.Stop();
     }
     return ret;
 }
@@ -143,6 +149,9 @@ DWORD WINAPI Job::CalculateHashThreadFunction(
     auto ret = computeHash.Compute();
     if (ret != 0) {
         printf("\nerror %d\n", ret);
+        p->readDiskDrive.Stop();
+        p->compressMgr.Stop();
+        p->writePayload.Stop();
     }
     return ret;
 }
@@ -166,6 +175,9 @@ DWORD WINAPI Job::WriteResultThreadFunction(
     auto ret = writePayload.Write(p->totalBlocks);
     if (ret != 0) {
         printf("\nerror %d\n", ret);
+        p->readDiskDrive.Stop();
+        p->compressMgr.Stop();
+        p->computeHash.Stop();
     }
     return ret;
 }
