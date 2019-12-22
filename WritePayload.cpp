@@ -48,7 +48,7 @@ DWORD WritePayload::Write(
                 DWORD dummy = 0;
                 ::WriteFile(imageFile_.get(), block->Data(), static_cast<DWORD>(block->Size()), &dummy, nullptr);
                 compressedVector[j].reset();
-                compressedVector.DecrementOneElemnt();
+                compressedVector.DecrementOneElement();
                 compressedVector.CheckNotifyEmpty([&compressedVector]
                     {
                         compressedVector.NextModulusBlock();

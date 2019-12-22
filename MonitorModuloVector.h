@@ -16,7 +16,7 @@ public:
     using base_t = Monitor<SV, M>;
     using value_type = typename SV::value_type;
     using reference = typename SV::reference;
-    using const_reference = typename SV::reference;
+    using const_reference = typename SV::const_reference;
     using mutex_t = typename base_t::mutex_t;
     using size_type = unsigned int;
     using State = typename SV::State;
@@ -150,7 +150,7 @@ public:
         }
     }
 
-    auto DecrementOneElemnt()
+    auto DecrementOneElement()
     {
         return --currElements_;
     }
@@ -188,7 +188,7 @@ public:
         }
     }
 
-    auto IncrementOneElemnt()
+    auto IncrementOneElement()
     {
         return ++currElements_;
     }

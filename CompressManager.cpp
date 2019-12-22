@@ -70,7 +70,7 @@ DWORD CompressManager::Compress()
             }
 
             compressedVector_[item.first] = compressBlock;
-            compressedVector_.IncrementOneElemnt();
+            compressedVector_.IncrementOneElement();
             compressedVector_.CheckNotifyFull([this]
                 {
                     compressedContainerChanged_.notify_all();
