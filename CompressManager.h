@@ -40,7 +40,7 @@ public:
 
     void Stop();
 
-   DWORD Compress();
+    DWORD Compress();
 
     compressed_vector_t& CompressedVector() { return compressedVector_; }
 
