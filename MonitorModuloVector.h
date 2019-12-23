@@ -60,7 +60,8 @@ public:
                 base_t::Stopping();
             });
         if (base_t::state_ == State::STOPPED) {
-            vectorEmpty_.notify_all();
+            vectorReader_.notify_all();
+            vectorWriter_.notify_all();
         }
     }
 
@@ -72,8 +73,8 @@ public:
             {
                 base_t::Stop();
             });
-        vectorEmpty_.notify_all();
-        vectorFull_.notify_all();
+        vectorReader_.notify_all();
+        vectorWriter_.notify_all();
     }
 
     auto CurrentElements()
@@ -100,7 +101,7 @@ public:
     {
         std::unique_lock<mutex_t> lock(base_t::mutex_);
         for (; ((base_t::state_ & waitState) != State::NONE) && !InRange(index);) {
-            vectorEmpty_.wait(lock);
+            vectorReader_.wait(lock);
         }
     }
 
@@ -146,7 +147,7 @@ public:
     {
         std::unique_lock<mutex_t> lock(base_t::mutex_);
         for (; ((base_t::state_ & waitState) != State::NONE) && !IsEmpty();) {
-            vectorEmpty_.wait(lock);
+            vectorReader_.wait(lock);
         }
     }
 
@@ -161,7 +162,7 @@ public:
     {
         if (IsEmpty()) {
             f();
-            vectorEmpty_.notify_all();
+            vectorReader_.notify_all();
         }
     }
 
@@ -184,7 +185,7 @@ public:
     {
         std::unique_lock<mutex_t> lock(base_t::mutex_);
         for (; ((base_t::state_ & waitState) != State::NONE) && !IsFull();) {
-            vectorFull_.wait(lock);
+            vectorWriter_.wait(lock);
         }
     }
 
@@ -197,7 +198,7 @@ public:
     void CheckNotifyFull(F&& f)
     {
         if (IsFull()) {
-            vectorFull_.notify_all();
+            vectorWriter_.notify_all();
             f();
         }
     }
@@ -214,6 +215,6 @@ protected:
     std::atomic<size_type> endIndex_ = 0;     // excluded
     std::atomic<size_type> currElements_ = 0; // <= (endIndex_ - startIndex)
     size_type              upperBoundIndex_ = (std::numeric_limits<size_type>::max)();
-    cond_t                 vectorEmpty_;
-    cond_t                 vectorFull_;
+    cond_t                 vectorReader_;
+    cond_t                 vectorWriter_;
 };
