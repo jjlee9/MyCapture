@@ -33,7 +33,7 @@ public:
         _In_ size_type modulus,
         _In_ size_type upperBoundIndex)
     {
-        base_t::resize(modulus);
+        base_t::resize(modulus * 2);
         upperBoundIndex_ = upperBoundIndex;
         SetStartIndex(0);
 
@@ -82,6 +82,18 @@ public:
         return currElements_.load();
     }
 
+    bool InBackupRange(
+        _In_ size_type index) const
+    {
+        auto backupStartIndex = endIndex_.load();
+        auto backupEndIndex = backupEndIndex_.load();
+
+        if (index < backupStartIndex) { return false; }
+        if (index >= backupEndIndex) { return false; }
+
+        return true;
+    }
+
     bool InRange(
         _In_ size_type index) const
     {
@@ -94,7 +106,7 @@ public:
         return true;
     }
 
-    // wait until the index is fall in the range of [startIndex_, endIndex_ ) or 
+    // wait until the index is fall in the range of [startIndex_, endIndex_ )
     void WaitInRange(
         _In_ size_type index,
         _In_ State     waitState)
@@ -105,24 +117,55 @@ public:
         }
     }
 
+    bool InFullRange(
+        _In_ size_type index) const
+    {
+        auto startIndex = startIndex_.load();
+        auto backupEndIndex = backupEndIndex_.load();
+
+        if (index < startIndex) { return false; }
+        if (index >= backupEndIndex) { return false; }
+
+        return true;
+    }
+
+    // wait until the index is fall in the range of [startIndex_, backupEndIndex_ )
+    void WaitInFullRange(
+        _In_ size_type index,
+        _In_ State     waitState)
+    {
+        std::unique_lock<mutex_t> lock(base_t::mutex_);
+        for (; ((base_t::state_ & waitState) != State::NONE) && !InFullRange(index);) {
+            vectorReader_.wait(lock);
+        }
+    }
+
     void SetStartIndex(
         _In_ size_type startIndex)
     {
         base_t::uniqueInvoke([startIndex, this]
             {
                 startIndex_ = startIndex;
-                auto endIndex = startIndex + static_cast<size_type>(base_t::size());
+                auto endIndex = startIndex + static_cast<size_type>(base_t::size()) / 2;
                 if (endIndex > upperBoundIndex_) {
                     endIndex = upperBoundIndex_;
                 }
                 endIndex_ = endIndex;
+                currElements_ = currBackupElements_.load();
+
+                auto backupEndIndex = startIndex + static_cast<size_type>(base_t::size());
+                if (backupEndIndex > upperBoundIndex_) {
+                    backupEndIndex = upperBoundIndex_;
+                }
+                backupEndIndex_ = backupEndIndex;
+                currBackupElements_ = 0;
             });
     }
 
     reference operator [](
         _In_ size_type index)
     {
-        if (!InRange(index)) { throw OutOfRange(); }
+        if (!InFullRange(index)) { throw OutOfRange(); }
 
         auto moduloIndex = index % base_t::size();
         return base_t::operator [](moduloIndex);
@@ -131,7 +174,7 @@ public:
     const_reference operator [](
         _In_ size_type index) const
     {
-        if (!InRange(index)) { throw OutOfRange(); }
+        if (!InFullRange(index)) { throw OutOfRange(); }
 
         auto moduloIndex = index % base_t::size();
         return base_t::operator [](moduloIndex);
@@ -151,19 +194,21 @@ public:
         }
     }
 
-    auto DecrementOneElement()
+    auto DecrementOneElement(
+        _In_ size_type index)
     {
-        return --currElements_;
+        if (InRange(index)) {
+            return --currElements_;
+        } else if (InBackupRange(index)) {
+            return --currBackupElements_;
+        } else {
+            throw OutOfRange();
+        }
     }
 
-    template <class F>
-    void CheckNotifyEmpty(
-        _In_ F&& f)
+    void NotifyReader()
     {
-        if (IsEmpty()) {
-            f();
-            vectorReader_.notify_all();
-        }
+        vectorReader_.notify_all();
     }
 
     bool IsFull() const
@@ -189,31 +234,36 @@ public:
         }
     }
 
-    auto IncrementOneElement()
+    auto IncrementOneElement(
+        _In_ size_type index)
     {
-        return ++currElements_;
+        if (InRange(index)) {
+            return ++currElements_;
+        } else if (InBackupRange(index)) {
+            return ++currBackupElements_;
+        } else {
+            throw OutOfRange();
+        }
     }
 
-    template <class F>
-    void CheckNotifyFull(F&& f)
+    void NotifyWriter()
     {
-        if (IsFull()) {
-            vectorWriter_.notify_all();
-            f();
-        }
+        vectorWriter_.notify_all();
     }
 
     void NextModulusBlock()
     {
-        SetStartIndex(startIndex_.load() + static_cast<size_type>(base_t::size()));
+        SetStartIndex(startIndex_.load() + static_cast<size_type>(base_t::size()) / 2);
     }
 
 protected:
     using cond_t = C;
 
     std::atomic<size_type> startIndex_ = 0;
-    std::atomic<size_type> endIndex_ = 0;     // excluded
-    std::atomic<size_type> currElements_ = 0; // <= (endIndex_ - startIndex)
+    std::atomic<size_type> endIndex_ = 0;           // excluded
+    std::atomic<size_type> backupEndIndex_ = 0;     // excluded
+    std::atomic<size_type> currElements_ = 0;       // <= (endIndex_ - startIndex_)
+    std::atomic<size_type> currBackupElements_ = 0; // <= (backupEndIndex_ - endIndex_)
     size_type              upperBoundIndex_ = (std::numeric_limits<size_type>::max)();
     cond_t                 vectorReader_;
     cond_t                 vectorWriter_;

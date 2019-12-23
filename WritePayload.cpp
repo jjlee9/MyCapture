@@ -47,12 +47,20 @@ DWORD WritePayload::Write(
 
                 DWORD dummy = 0;
                 ::WriteFile(imageFile_.get(), block->Data(), static_cast<DWORD>(block->Size()), &dummy, nullptr);
-                compressedVector[j].reset();
-                compressedVector.DecrementOneElement();
-                compressedVector.CheckNotifyEmpty([&compressedVector]
+                auto empty = compressedVector.uniqueInvoke(
+                    [&compressedVector, j]
                     {
-                        compressedVector.NextModulusBlock();
+                        compressedVector[j].reset();
+                        compressedVector.DecrementOneElement(j);
+                        auto empty = compressedVector.IsEmpty();
+                        if (empty) {
+                            compressedVector.NextModulusBlock();
+                        }
+                        return empty;
                     });
+                if (empty) {
+                    compressedVector.NotifyReader();
+                }
             }
             LARGE_INTEGER fileSize;
             GetFileSizeEx(imageFile_.get(), &fileSize);

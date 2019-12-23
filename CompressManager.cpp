@@ -62,19 +62,22 @@ DWORD CompressManager::Compress()
             }
 
             // wait for compressedVector_ is available
-            compressedVector_.WaitInRange(item.first, compressed_vector_t::State::START);
+            compressedVector_.WaitInFullRange(item.first, compressed_vector_t::State::START);
             if (compressedVector_.state() != compressed_vector_t::State::START) {
                 succeeded_ = false;
                 compressedContainerChanged_.notify_all();
                 return Return(36);
             }
 
-            compressedVector_[item.first] = compressBlock;
-            compressedVector_.IncrementOneElement();
-            compressedVector_.CheckNotifyFull([this]
+            auto full = compressedVector_.uniqueInvoke([&item, &compressBlock, this]
                 {
-                    compressedContainerChanged_.notify_all();
+                    compressedVector_[item.first] = compressBlock;
+                    compressedVector_.IncrementOneElement(item.first);
+                    return compressedVector_.IsFull();
                 });
+            if (full) {
+                compressedContainerChanged_.notify_all();
+            }
         }
 
         return Return(0);

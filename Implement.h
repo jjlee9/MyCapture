@@ -25,5 +25,5 @@ public:
 
     using vector_item = shared_buffer_t;
     using state_vector = StateVector<std::vector<vector_item>>;
-    using monitor_modulo_vector_t = MonitorModuloVector<state_vector>;
+    using monitor_modulo_vector_t = MonitorModuloVector<state_vector, std::recursive_mutex, std::condition_variable_any>;
 };
