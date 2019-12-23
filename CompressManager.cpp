@@ -62,7 +62,7 @@ DWORD CompressManager::Compress()
             }
 
             // wait for compressedVector_ is available
-            compressedVector_.WaitInFullRange(item.first, compressed_vector_t::State::START);
+            compressedVector_.WaitInRange(item.first, compressed_vector_t::State::START);
             if (compressedVector_.state() != compressed_vector_t::State::START) {
                 succeeded_ = false;
                 compressedContainerChanged_.notify_all();
