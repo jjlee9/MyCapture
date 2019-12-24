@@ -34,8 +34,7 @@ public:
 
     explicit ReadDiskDrive(
         _In_ const wil::unique_hfile& diskDrive) :
-        diskDrive_(diskDrive),
-        queueItemCount_(0)
+        diskDrive_(diskDrive)
     {
     }
 
