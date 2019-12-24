@@ -1,7 +1,8 @@
 #pragma once
 
 #include <Windows.h>
-#include <vector>
+#include <memory>
+#include <utility>
 #include <queue>
 #include "Buffer.h"
 #include "StateQueue.h"

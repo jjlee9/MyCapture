@@ -1,5 +1,4 @@
 #include "ReadDiskDrive.h"
-#include <type_traits>
 
 bool ReadDiskDrive::Init()
 {
@@ -79,7 +78,7 @@ bool ReadDiskDrive::TriggerRead(
     LARGE_INTEGER offset;
     offset.QuadPart = static_cast<decltype(LARGE_INTEGER::QuadPart)>(blockId) * BLOCK_LENGTH;
     // clear the buffer for security read block from drive, if needed
-    //memset(block->Data(), 0, block->Size());
+    // memset(block->Data(), 0, block->Size());
 
     ::SetFilePointerEx(diskDrive_.get(), offset, nullptr, FILE_BEGIN);
     DWORD size = 0;
@@ -107,11 +106,11 @@ void ReadDiskDrive::Push(
 void ReadDiskDrive::End()
 {
     // push an empty shared buffer - sentinel for end condition
-    for (std::remove_const_t<decltype(CALCULATE_HASH_THREAD_COUNT)> i = 0; i < CALCULATE_HASH_THREAD_COUNT; ++i) {
-        calculateHashQueue_.push(std::make_pair(0, shared_buffer_t()));
-    }
-
     for (std::remove_const_t<decltype(COMPRESS_THREAD_COUNT)> i = 0; i < COMPRESS_THREAD_COUNT; ++i) {
         uncompressedQueue_.push(std::make_pair(0, shared_buffer_t()));
+    }
+
+    for (std::remove_const_t<decltype(CALCULATE_HASH_THREAD_COUNT)> i = 0; i < CALCULATE_HASH_THREAD_COUNT; ++i) {
+        calculateHashQueue_.push(std::make_pair(0, shared_buffer_t()));
     }
 }

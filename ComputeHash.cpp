@@ -6,6 +6,8 @@ bool ComputeHash::Init(
     _In_ block_id totalBlocks)
 {
     auto ret = sha256_.Init(BCRYPT_SHA256_ALGORITHM);
+    if (!ret) { return ret; }
+
     hashTable_ = std::make_shared<hash_t>(static_cast<LONGLONG>(sha256_.GetHashLength()) * totalBlocks);
     completeThreads_ = 0;
     hashDone_.resize(0);

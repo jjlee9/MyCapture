@@ -1,7 +1,6 @@
 #pragma once
 
 #include <assert.h>
-#include <limits>
 #include <vector>
 
 template <typename T> class Buffer

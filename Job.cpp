@@ -30,6 +30,7 @@ bool Job::DispatchThread(
     if (!::GetFileSizeEx(diskDrive_.get(), &fileSize)) { return false; }
 
     auto totalBlocks = static_cast<block_id>((fileSize.QuadPart + BLOCK_LENGTH + 1) / BLOCK_LENGTH);
+
     ReadDiskDrive readDiskDrive(diskDrive_);
     if (!readDiskDrive.Init()) { return false; }
     CompressManager compressMgr(algo, readDiskDrive.UncompressedQueue());

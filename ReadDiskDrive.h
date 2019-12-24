@@ -47,8 +47,8 @@ public:
     DWORD Read(
         _In_ block_id totalBlocks);
 
-    calculate_hash_queue_t& CalculateHashQueue() { return calculateHashQueue_; }
     uncompressed_queue_t& UncompressedQueue() { return uncompressedQueue_; }
+    calculate_hash_queue_t& CalculateHashQueue() { return calculateHashQueue_; }
 
 private:
     using mutex_t = std::mutex;
@@ -82,6 +82,6 @@ private:
     DWORD                    queueItemCount_ = 0;  // min(calculateHashQueue_, compressQueue_)
     DWORD                    limitBlock_ = 0;      // limit to read up to this block
 
-    calculate_hash_queue_t   calculateHashQueue_;  // queue of disk block memory buffer for calculating hash
     uncompressed_queue_t     uncompressedQueue_;   // queue of uncompressed disk block memory buffer for compression
+    calculate_hash_queue_t   calculateHashQueue_;  // queue of disk block memory buffer for calculating hash
 };

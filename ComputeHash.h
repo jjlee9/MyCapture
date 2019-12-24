@@ -16,7 +16,6 @@ class ComputeHash
 public:
     using hash_t = Implement::buffer_t;
     using shared_hash_t = Implement::shared_buffer_t;
-    using hash_data_t = BYTE*;
 
     using block_id = Implement::block_id;
     using calculate_hash_queue_t = ReadDiskDrive::calculate_hash_queue_t;

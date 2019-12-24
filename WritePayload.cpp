@@ -7,9 +7,7 @@ bool WritePayload::Init(
 {
     imageFile_ = wil::unique_hfile(::CreateFileW(imageFile, GENERIC_WRITE, 0,
         nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr));
-    if (!imageFile_) {
-        return false;
-    }
+    if (!imageFile_) { return false; }
 
     Start();
 
