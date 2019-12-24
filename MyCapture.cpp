@@ -3,6 +3,7 @@
 #include <tchar.h>
 #include "Consts.h"
 #include "Job.h"
+#include "sequential/Job.h"
 
 int __cdecl wmain(
     int      argc,
@@ -46,8 +47,41 @@ int __cdecl wmain(
     }
 
 #if defined(_DEBUG) //|| defined(NDEBUG)
-    auto end = std::chrono::system_clock::now();
-    std::chrono::duration<double> secs = end - start;
+    auto end1 = std::chrono::system_clock::now();
+    std::chrono::duration<double> secs = end1 - start;
+    wprintf(L"elapsed time : %f secs\n", secs.count());
+#endif
+
+    {
+        wcscat_s(imageFile, L"1");
+        sequential::Job job;
+
+        bool ok = job.Capture(drivePath, imageFile, _wtoi(algoNum));
+        if (!ok) {
+            return 2;
+        }
+    }
+
+#if defined(_DEBUG) //|| defined(NDEBUG)
+    auto end2 = std::chrono::system_clock::now();
+    secs = end2 - end1;
+    wprintf(L"elapsed time : %f secs\n", secs.count());
+#endif
+
+    {
+        wcscat_s(imageFile, L"2");
+        sequential::Job job;
+
+        bool ok = job.Capture(drivePath, imageFile, _wtoi(algoNum),
+            sequential::Job::compress{}, sequential::Job::calculate_hash{});
+        if (!ok) {
+            return 2;
+        }
+    }
+
+#if defined(_DEBUG) //|| defined(NDEBUG)
+    auto end3 = std::chrono::system_clock::now();
+    secs = end3 - end2;
     wprintf(L"elapsed time : %f secs\n", secs.count());
 #endif
 }

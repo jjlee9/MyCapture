@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="sequential">
+      <UniqueIdentifier>{ed167a4a-a3ce-4939-946b-50921e7a347d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sequential\Header Files">
+      <UniqueIdentifier>{b43c8bf9-2d15-40c1-b37b-e298f398b705}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sequential\Source Files">
+      <UniqueIdentifier>{b3659af5-4912-48aa-add9-bd45e72c6e8f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyCapture.cpp">
@@ -41,6 +50,21 @@
     </ClCompile>
     <ClCompile Include="WritePayload.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sequential\Job.cpp">
+      <Filter>sequential\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sequential\ReadDiskDrive.cpp">
+      <Filter>sequential\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sequential\CompressManager.cpp">
+      <Filter>sequential\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sequential\ComputeHash.cpp">
+      <Filter>sequential\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sequential\WritePayload.cpp">
+      <Filter>sequential\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -100,6 +124,27 @@
     </ClInclude>
     <ClInclude Include="MonitorModuloVector.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sequential\Job.h">
+      <Filter>sequential\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sequential\DiskConsts.h">
+      <Filter>sequential\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sequential\Implement.h">
+      <Filter>sequential\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sequential\ReadDiskDrive.h">
+      <Filter>sequential\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sequential\CompressManager.h">
+      <Filter>sequential\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sequential\ComputeHash.h">
+      <Filter>sequential\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sequential\WritePayload.h">
+      <Filter>sequential\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
