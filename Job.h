@@ -7,7 +7,6 @@
 #include "Implement.h"
 
 struct ThreadParam;
-struct ThreadParamCommon;
 
 class Job
 {
