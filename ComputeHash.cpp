@@ -19,13 +19,11 @@ bool ComputeHash::Init(
 void ComputeHash::Start()
 {
     start_ = true;
-    calculateHashQueue_.Start();
 }
 
 void ComputeHash::Stop()
 {
     start_ = false;
-    calculateHashQueue_.Stop();
     hashFinished_.notify_all();
 }
 

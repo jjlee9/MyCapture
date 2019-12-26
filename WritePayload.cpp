@@ -61,7 +61,8 @@ DWORD WritePayload::Write(
                 }
             }
             LARGE_INTEGER fileSize;
-            GetFileSizeEx(imageFile_.get(), &fileSize);
+            ::GetFileSizeEx(imageFile_.get(), &fileSize);
+            // should use i - 1 here, but
             printf("write compress done, block %d file size:%lld\r", i, fileSize.QuadPart);
         }
         printf("\n");
@@ -74,7 +75,7 @@ DWORD WritePayload::Write(
         }
 
         LARGE_INTEGER fileSize;
-        GetFileSizeEx(imageFile_.get(), &fileSize);
+        ::GetFileSizeEx(imageFile_.get(), &fileSize);
         printf("write hash done, file size:%lld\n", fileSize.QuadPart);
 
         return Return(0);
