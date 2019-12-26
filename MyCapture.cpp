@@ -9,7 +9,7 @@ int __cdecl wmain(
     int      argc,
     wchar_t* argv[])
 {
-#if defined(_DEBUG) //|| defined(NDEBUG)
+#if defined(_DEBUG) || defined(NDEBUG)
     auto start = std::chrono::system_clock::now();
 #endif
 
@@ -46,7 +46,7 @@ int __cdecl wmain(
         }
     }
 
-#if defined(_DEBUG) //|| defined(NDEBUG)
+#if defined(_DEBUG) || defined(NDEBUG)
     auto end1 = std::chrono::system_clock::now();
     std::chrono::duration<double> secs = end1 - start;
     wprintf(L"elapsed time : %f secs\n", secs.count());
@@ -62,7 +62,7 @@ int __cdecl wmain(
         }
     }
 
-#if defined(_DEBUG) //|| defined(NDEBUG)
+#if defined(_DEBUG) || defined(NDEBUG)
     auto end2 = std::chrono::system_clock::now();
     secs = end2 - end1;
     wprintf(L"elapsed time : %f secs\n", secs.count());
@@ -79,7 +79,7 @@ int __cdecl wmain(
         }
     }
 
-#if defined(_DEBUG) //|| defined(NDEBUG)
+#if defined(_DEBUG) || defined(NDEBUG)
     auto end3 = std::chrono::system_clock::now();
     secs = end3 - end2;
     wprintf(L"elapsed time : %f secs\n", secs.count());
