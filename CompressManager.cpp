@@ -7,7 +7,7 @@ CompressManager::CompressManager(
     _In_ int                   algo,
     _In_ uncompressed_queue_t& uncompressedQueue) :
     algo_(algo),
-    unompressedQueue_(uncompressedQueue)
+    uncompressedQueue_(uncompressedQueue)
 {
 }
 
@@ -31,14 +31,12 @@ bool CompressManager::Init(
 void CompressManager::Start()
 {
     start_ = true;
-    unompressedQueue_.Start();
     compressedVector_.Start();
 }
 
 void CompressManager::Stop()
 {
     start_ = false;
-    unompressedQueue_.Stop();
     compressedVector_.Stop();
     compressedContainerChanged_.notify_all();
 }
@@ -51,7 +49,7 @@ DWORD CompressManager::Compress()
                 ++completeThreads_;
             });
 
-        auto& que = unompressedQueue_;
+        auto& que = uncompressedQueue_;
 
         for (auto item = que.Pop(); item.second.get() != nullptr; item = que.Pop()) {
             auto compressBlock = CompressBlock(item.first, std::move(item.second));

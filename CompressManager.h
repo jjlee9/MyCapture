@@ -67,7 +67,7 @@ private:
     CompressDll           compressDll_;
     int                   algo_;                       // compress algorithm
     bool                  start_ = false;
-    uncompressed_queue_t& unompressedQueue_;           // read uncompressed data for compression
+    uncompressed_queue_t& uncompressedQueue_;          // read uncompressed data for compression
     compressed_vector_t   compressedVector_;           // compressed data
 
     std::atomic<int>      completeThreads_ = 0;
