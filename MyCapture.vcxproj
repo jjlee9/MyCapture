@@ -171,7 +171,6 @@
     <ClCompile Include="WritePayload.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Buffer.h" />
     <ClInclude Include="ComputeHash.h" />
     <ClInclude Include="CompressDll.h" />
     <ClInclude Include="CompressManager.h" />

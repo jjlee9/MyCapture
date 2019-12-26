@@ -44,7 +44,7 @@ DWORD WritePayload::Write(
                 if (block.get() == nullptr) { return Return(45); }
 
                 DWORD dummy = 0;
-                ::WriteFile(imageFile_.get(), block->Data(), static_cast<DWORD>(block->Size()), &dummy, nullptr);
+                ::WriteFile(imageFile_.get(), block->data(), static_cast<DWORD>(block->size()), &dummy, nullptr);
                 auto empty = compressedVector.uniqueInvoke(
                     [&compressedVector, j]
                     {
@@ -71,7 +71,7 @@ DWORD WritePayload::Write(
         auto hash = computeHash_.WaitHash();
         if (hash) {
             DWORD dummy = 0;
-            ::WriteFile(imageFile_.get(), hash->Data(), static_cast<DWORD>(hash->Size()), &dummy, nullptr);
+            ::WriteFile(imageFile_.get(), hash->data(), static_cast<DWORD>(hash->size()), &dummy, nullptr);
         }
 
         LARGE_INTEGER fileSize;

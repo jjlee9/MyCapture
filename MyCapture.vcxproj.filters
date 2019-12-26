@@ -89,9 +89,6 @@
     <ClInclude Include="Monitor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Buffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ReadDiskDrive.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -9,12 +9,12 @@
 #include "Implement.h"
 #include "ReadDiskDrive.h"
 #include "Crypt.h"
-#include "Buffer.h"
 
 class ComputeHash
 {
 public:
-    using hash_t = Implement::buffer_t;
+    using buffer_t = Implement::buffer_t;
+    using hash_t = buffer_t;
     using shared_hash_t = Implement::shared_buffer_t;
 
     using block_id = Implement::block_id;

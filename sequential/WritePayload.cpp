@@ -27,7 +27,7 @@ bool sequential::WritePayload::Write(
         if (block.get() == nullptr) { return false; }
 
         DWORD dummy = 0;
-        ::WriteFile(imageFile_.get(), block->Data(), static_cast<DWORD>(block->Size()), &dummy, nullptr);
+        ::WriteFile(imageFile_.get(), block->data(), static_cast<DWORD>(block->size()), &dummy, nullptr);
         LARGE_INTEGER fileSize;
         ::GetFileSizeEx(imageFile_.get(), &fileSize);
         printf("write compress done, block %d file size:%lld\r", i, fileSize.QuadPart);
@@ -43,7 +43,7 @@ bool sequential::WritePayload::Write(
     auto hash = computeHash_.GetHash();
     if (hash) {
         DWORD dummy = 0;
-        ::WriteFile(imageFile_.get(), hash->Data(), static_cast<DWORD>(hash->Size()), &dummy, nullptr);
+        ::WriteFile(imageFile_.get(), hash->data(), static_cast<DWORD>(hash->size()), &dummy, nullptr);
     }
 
     LARGE_INTEGER fileSize;

@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 #include <wil/resource.h>
-#include "Buffer.h"
+#include "Implement.h"
 
 class Crypt
 {
@@ -22,6 +22,8 @@ protected:
 class Hash
 {
 public:
+    using buffer_t = Implement::buffer_t;
+
     explicit Hash(const Crypt& crypt) :
         algo_(crypt.Algorithm()), hashLength_(crypt.GetHashLength())
     {
@@ -38,6 +40,6 @@ public:
 protected:
     const wil::unique_bcrypt_algorithm& algo_;
     DWORD                               hashLength_ = 0;
-    Buffer<BYTE>                        hashObject_;
+    buffer_t                            hashObject_;
     wil::unique_bcrypt_hash             hashHandle_;
 };

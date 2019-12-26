@@ -20,11 +20,11 @@ bool sequential::ReadDiskDrive::Read(
         // memset(block->Data(), 0, block->Size());
 
         DWORD size = 0;
-        auto ok = ::ReadFile(diskDrive_.get(), block->Data(), static_cast<DWORD>(block->Size()), &size, 0);
+        auto ok = ::ReadFile(diskDrive_.get(), block->data(), static_cast<DWORD>(block->size()), &size, 0);
         if (ok == FALSE) { return false; }
 
         if (size != BLOCK_LENGTH) {
-            block->Resize(size);
+            block->resize(size);
         }
         uncompressedQueue_.emplace(i, std::move(block));
     }
@@ -47,11 +47,11 @@ bool sequential::ReadDiskDrive::Read(
         // memset(block->Data(), 0, block->Size());
 
         DWORD size = 0;
-        auto ok = ::ReadFile(diskDrive_.get(), block->Data(), static_cast<DWORD>(block->Size()), &size, 0);
+        auto ok = ::ReadFile(diskDrive_.get(), block->data(), static_cast<DWORD>(block->size()), &size, 0);
         if (ok == FALSE) { return false; }
 
         if (size != BLOCK_LENGTH) {
-            block->Resize(size);
+            block->resize(size);
         }
         calculateHashQueue_.emplace(i, std::move(block));
     }
@@ -75,11 +75,11 @@ bool sequential::ReadDiskDrive::Read(
         // memset(block->Data(), 0, block->Size());
 
         DWORD size = 0;
-        auto ok = ::ReadFile(diskDrive_.get(), block->Data(), static_cast<DWORD>(block->Size()), &size, 0);
+        auto ok = ::ReadFile(diskDrive_.get(), block->data(), static_cast<DWORD>(block->size()), &size, 0);
         if (ok == FALSE) { return false; }
 
         if (size != BLOCK_LENGTH) {
-            block->Resize(size);
+            block->resize(size);
         }
         uncompressedQueue_.emplace(i, block);
         calculateHashQueue_.emplace(i, std::move(block));

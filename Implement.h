@@ -1,10 +1,10 @@
 #pragma once
 
 #include <Windows.h>
+#include <vector>
 #include <memory>
 #include <utility>
 #include <queue>
-#include "Buffer.h"
 #include "StateQueue.h"
 #include "MonitorQueue.h"
 #include "StateVector.h"
@@ -14,7 +14,7 @@ class Implement
 {
 public:
     // resizeable buffer
-    using buffer_t = Buffer<BYTE>;
+    using buffer_t = std::vector<BYTE>;
     using shared_buffer_t = std::shared_ptr<buffer_t>;
 
     using block_id = DWORD;

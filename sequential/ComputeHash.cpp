@@ -27,8 +27,8 @@ bool sequential::ComputeHash::Compute(
         auto item = que.front();
         que.pop();
 
-        bool ok = hash.GetHash(item.second->Data(), static_cast<ULONG>(item.second->Size()),
-            hashTable_->Data() + (sha256_.GetHashLength() * item.first));
+        bool ok = hash.GetHash(item.second->data(), static_cast<ULONG>(item.second->size()),
+            hashTable_->data() + (sha256_.GetHashLength() * item.first));
         if (!ok) {
             return false;
         }

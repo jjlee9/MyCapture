@@ -34,8 +34,8 @@ bool Hash::Create()
     }
 
     //create a hash
-    hashObject_.Resize(hashObjectLength);
-    status = ::BCryptCreateHash(algo_.get(), &hashHandle_, hashObject_.Data(), hashObjectLength,
+    hashObject_.resize(hashObjectLength);
+    status = ::BCryptCreateHash(algo_.get(), &hashHandle_, hashObject_.data(), hashObjectLength,
         nullptr, 0, BCRYPT_HASH_REUSABLE_FLAG);
     if (!BCRYPT_SUCCESS(status)) {
         return false;

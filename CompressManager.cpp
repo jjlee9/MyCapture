@@ -94,7 +94,7 @@ CompressManager::shared_buffer_t CompressManager::CompressBlock(
     _In_ block_id          blockNo,
     _In_ shared_buffer_t&& uncompressBlock)
 {
-    auto compressBlock = std::make_shared<buffer_t>(uncompressBlock->Size() + 4 * 1024);
+    auto compressBlock = std::make_shared<buffer_t>(uncompressBlock->size() + 4 * 1024);
 
     std::unique_ptr<BYTE[]> workSpace;
     ULONG workSpaceSize = 0, fragmentWorkSpaceSize = 0;
@@ -108,8 +108,8 @@ CompressManager::shared_buffer_t CompressManager::CompressBlock(
     ULONG compressSize = 0;
     ret = (*compressDll_.rtlCompressBuffer)(
         algo_ | COMPRESSION_ENGINE_STANDARD,
-        uncompressBlock->Data(), static_cast<ULONG>(uncompressBlock->Size()),
-        compressBlock->Data(), static_cast<ULONG>(compressBlock->Size()),
+        uncompressBlock->data(), static_cast<ULONG>(uncompressBlock->size()),
+        compressBlock->data(), static_cast<ULONG>(compressBlock->size()),
         4 * 1024, &compressSize, workSpace.get());
 
     DWORD lastError;
@@ -120,16 +120,16 @@ CompressManager::shared_buffer_t CompressManager::CompressBlock(
     }
 
     if (lastError == ERROR_INSUFFICIENT_BUFFER) {
-        compressBlock->Resize(compressSize);
+        compressBlock->resize(compressSize);
         ret = (*compressDll_.rtlCompressBuffer)(
             algo_ | COMPRESSION_ENGINE_MAXIMUM,
-            uncompressBlock->Data(), static_cast<ULONG>(uncompressBlock->Size()),
-            compressBlock->Data(), static_cast<ULONG>(compressBlock->Size()),
+            uncompressBlock->data(), static_cast<ULONG>(uncompressBlock->size()),
+            compressBlock->data(), static_cast<ULONG>(compressBlock->size()),
             4 * 1024, &compressSize, workSpace.get());
     }
 
     if (ret == 0) {
-        compressBlock->Resize(compressSize);
+        compressBlock->resize(compressSize);
         return compressBlock;
     } else {
         return shared_buffer_t(); // empty buffer

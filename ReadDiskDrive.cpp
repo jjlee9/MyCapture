@@ -82,10 +82,10 @@ bool ReadDiskDrive::TriggerRead(
 
     ::SetFilePointerEx(diskDrive_.get(), offset, nullptr, FILE_BEGIN);
     DWORD size = 0;
-    auto ok = ReadFile(diskDrive_.get(), block->Data(), static_cast<DWORD>(block->Size()), &size, 0);
+    auto ok = ReadFile(diskDrive_.get(), block->data(), static_cast<DWORD>(block->size()), &size, 0);
     if (ok) {
         if (size != BLOCK_LENGTH) {
-            block->Resize(size);
+            block->resize(size);
         }
         Push(blockId, std::move(block));
     }
