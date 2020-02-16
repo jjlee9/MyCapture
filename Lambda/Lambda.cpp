@@ -2,53 +2,94 @@
 //
 
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <utility>
 #include <vector>
 #include <algorithm>
+#include <type_traits>
 
+// Rule of five or maybe six. Apply to the functions I marked as default.
 class Employee
 {
 public:
-    explicit Employee(std::string id, std::string firstName, std::string lastName) :
-        id_(std::move(id)), firstName_(std::move(firstName)), lastName_(std::move(lastName))
-    {}
+    /*
+    Employee() = default;
+    */
+    explicit Employee(
+        std::string id,
+        std::string firstName,
+        std::string lastName) noexcept :
+        id_(std::move(id)),
+        firstName_(std::move(firstName)),
+        lastName_(std::move(lastName))
+    {
+        std::cout << "Employee Id:" << id_ << " Name:" << firstName_ << " "
+            << lastName_ << "\n";
+    }
 
-    Employee(const Employee& emp) :
-        id_(emp.id_), firstName_(emp.firstName_), lastName_(emp.lastName_)
-    {}
+    /*
+    Employee(
+        const Employee& emp) :
+        id_(emp.id_),
+        firstName_(emp.firstName_),
+        lastName_(emp.lastName_)
+    {
+        std::cout << "Employee(const Employee& emp)\n";
+    }
+    Employee(
+        const Employee& emp) = default;
+    */
 
-    Employee(Employee&& emp) :
-        id_(std::move(emp.id_)), firstName_(std::move(emp.firstName_)), lastName_(std::move(emp.lastName_))
-    {}
+    /*
+    Employee(
+        Employee&& emp) noexcept :
+        id_(std::move(emp.id_)),
+        firstName_(std::move(emp.firstName_)),
+        lastName_(std::move(emp.lastName_))
+    {
+        std::cout << "Employee(Employee&& emp) noexcept\n";
+    }
+    Employee(
+        Employee&& emp) noexcept = default;
+    */
+    /*
+    Employee() = default;
+    */
 
+    /*
     // not a strong exception safe way
-    Employee& operator =(const Employee& emp)
+    Employee& operator =(
+        const Employee& rhs)
     {
+        std::cout << "Employee& operator =(const Employee& rhs)\n";
+
         // avoid self assignment
-        if (&emp != this)
+        if (&rhs != this)
         {
-            id_ = emp.id_;
-            firstName_ = emp.firstName_;
-            lastName_ = emp.lastName_;
+            id_ = rhs.id_;
+            firstName_ = rhs.firstName_;
+            lastName_ = rhs.lastName_;
         }
-
         return *this;
     }
+    Employee& operator =(
+        const Employee& rhs) = default;
+    */
 
-    Employee& operator =(Employee&& emp) noexcept
+    /*
+    Employee& operator =(
+        Employee&& rhs) noexcept
     {
-        swap(emp);
+        std::cout << "Employee& operator =(Employee&& rhs) noexcept\n";
+        id_ = std::move(rhs.id_);
+        firstName_ = std::move(rhs.firstName_);
+        lastName_ = std::move(rhs.lastName_);
         return *this;
     }
-
-    void swap(Employee& rhs) noexcept
-    {
-        using std::swap;
-        swap(id_, rhs.id_);
-        swap(firstName_, rhs.firstName_);
-        swap(lastName_, rhs.lastName_);
-    }
+    Employee& operator =(
+        Employee&& rhs) noexcept = default;
+    */
 
     // demo only, not a really good return type
     const std::string& Id() const { return id_; }
@@ -71,53 +112,39 @@ std::ostream& operator <<(
     std::ostream& os,
     const Employee& emp)
 {
-    os << "Id:" << emp.id_ << " First Name:" << emp.firstName_ << " Last Name:" << emp.lastName_ << "\n";
+    // setw for alignment
+    os << "Id:" << std::setw(5)
+        << emp.id_ << " Name:" << std::setw(5) << emp.firstName_ << " "
+        << std::left << std::setw(5) << emp.lastName_
+        <<"\n";
     return os;
 }
 
-class Test
+// for demo purpose only, not a good design
+void performaceReview(
+    int& monthlySalary,
+    int& bonus)
 {
-public:
-    explicit Test(int salary) :
-        salary_(salary)
-    {}
-
-    void performanceReview()
-    {
-        // no need for mutable, we didn't change this
-        auto adjust = [this]()
-        {
-            salary_ += 200;
-        };
-        adjust();
-    }
-
-    friend std::ostream& operator <<(std::ostream&, const Test& tst);
-
-private:
-    int salary_;
-};
-
-std::ostream& operator <<(
-    std::ostream& os,
-    const Test& tst)
-{
-    os << "salary:" << tst.salary_ << "\n";
-    return os;
+    // monthlySalary change is for the next year
+    monthlySalary = static_cast<std::remove_reference_t<decltype(monthlySalary)>>(monthlySalary * 1.1);
+    // bonus chnage is for this year
+    bonus = 60000;
 }
 
 int main()
 {
+    std::cout << "Employ vector\n";
     std::vector<Employee> employees =
     {
-        Employee{ "24688", "J. J.", "Lee" },
-        Employee{ "12345", "T. J.", "Wang" },
-        Employee{ "11223", "G. H.", "Chin" },
+        Employee{ "13579", "J. J.", "Lee"   },
+        Employee{ "12345", "T. J.", "Wang"  },
+        Employee{ "11223", "G. H.", "Chin"  },
         Employee{ "11220", "C. H.", "Huang" },
     };
+    std::cout << "\n";
 
-    // sorted by Id(), small Id() to big Id()
-    std::cout << "\nSorted by Id()\n";
+    // sorted by Id()
+    std::cout << "Sorted by Id()\n";
     std::sort(employees.begin(), employees.end(), [](
         const Employee& lhs, const Employee& rhs)
         {
@@ -130,7 +157,7 @@ int main()
             std::cout << emp;
         });
 
-    // sorted by FirstName(), small FirstName() to big FirstName()
+    // sorted by FirstName()
     std::cout << "\nSorted by FirstName()\n";
     std::sort(employees.begin(), employees.end(), [](
         const Employee& lhs, const Employee& rhs)
@@ -144,7 +171,7 @@ int main()
             std::cout << emp;
         });
 
-    // sorted by LastName(), small LastName() to big LastName()
+    // sorted by LastName()
     std::cout << "\nSorted by LastName()\n";
     std::sort(employees.begin(), employees.end(), [](
         const Employee& lhs, const Employee& rhs)
@@ -159,9 +186,21 @@ int main()
         });
 
     std::cout << "\nPerformance Review\n";
-    Test tst(100000);
-    tst.performanceReview();
-    std::cout << tst;
+    int monthlySalary = 50000;
+    int bonus = monthlySalary * 1;
+
+    auto yearlyIncome = [monthlySalary, &bonus]
+    {
+        return monthlySalary * 12 + bonus;
+    };
+
+    performaceReview(monthlySalary, bonus);
+    // Hey, please calculate my income this year!
+    // == 50000 * 12 + 60000 == 66000
+    int myIncomeThisYear = yearlyIncome();
+
+    std::cout << "monthlySalary:" << monthlySalary
+        << " bonus:" << bonus << " myIncomeThisYear:" << myIncomeThisYear << "\n";
 
     return 0;
 }
