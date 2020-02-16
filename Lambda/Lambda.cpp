@@ -54,7 +54,7 @@ public:
         Employee&& emp) noexcept = default;
     */
     /*
-    Employee() = default;
+    ~Employee() = default;
     */
 
     /*
