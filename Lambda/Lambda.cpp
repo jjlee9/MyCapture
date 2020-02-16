@@ -91,6 +91,16 @@ public:
         Employee&& rhs) noexcept = default;
     */
 
+    /*
+    void swap(Employee& rhs) noexcept
+    {
+        using std::swap;
+        swap(id_, rhs.id_);
+        swap(firstName_, rhs.firstName_);
+        swap(lastName_, rhs.lastName_);
+    }
+    */
+
     // demo only, not a really good return type
     const std::string& Id() const { return id_; }
 
@@ -107,6 +117,16 @@ protected:
     std::string firstName_;
     std::string lastName_;
 };
+
+/*
+namespace std
+{
+    template <> void swap<Employee>(Employee& lhs, Employee& rhs)
+    {
+        lhs.swap(rhs);
+    }
+}
+*/
 
 std::ostream& operator <<(
     std::ostream& os,
