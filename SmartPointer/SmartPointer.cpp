@@ -51,7 +51,12 @@ std::ostream& operator <<(
 int main()
 {
     auto spEmp = std::make_shared<Employee>("13579", "J. J.", "Lee");
-    // Watch out! std::thread is not so OK for general usage.
+    // Watch out! The std::thread is not so OK for general usage.
+    // https://stackoverflow.com/questions/7241993/is-it-smart-to-replace-boostthread-and-boostmutex-with-c11-equivalents
+    // If you don't explicitly call join() or detach() then the boost::thread destructor and
+    // assignment operator will call detach() on the thread object being destroyed/assigned to.
+    // With a C++11 std::thread object, this will result in a call to std::terminate() and
+    // abort the application
     std::cout << "Lambda - capture smart pointer by value\n";
 
     std::thread thrd1([spEmp]() mutable
@@ -68,7 +73,7 @@ int main()
     std::cout << *spEmp << "\n";
 
     std::cout << "Lambda - capture smart pointer by reference\n";
-    std::thread thrd2([&spEmp]() mutable
+    std::thread thrd2([&spEmp]() // not mutable!!!
         {
             spEmp = std::make_shared<Employee>("11223", "G. H.", "Chin");
             std::cout << *spEmp;
