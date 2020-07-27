@@ -19,18 +19,47 @@ int main()
     using file_name = std::string;
     using modify_vector = std::vector<std::pair<dir_name, file_name>>;
     using modify_length = length_t;
+    using untracked_vector = std::vector<std::pair<dir_name, file_name>>;
+    using untracked_length = length_t;
 
     std::ifstream input(R"(C:\Users\v-jialee\Documents\test.txt)", std::ifstream::in);
-    std::regex renamed(R"(^\s*renamed:\s*(\S*)\s*->\s*(\S*)\s*$)");
-    std::regex modified(R"(^\s*modified:\s*(\S*)\s*$)");
+    std::regex renamed(R"(^\s+renamed:\s*(\S+)\s*->\s*(\S+)\s*$)");
+    std::regex modified(R"(^\s+modified:\s*(\S+)\s*$)");
+    std::regex untracked(R"(^Untracked files:\s*$)");
+    std::regex untracked_files(R"(^\s+(\S+)\s*$)");
+    std::regex others(R"(^\S+)");
 
     rename_vector rename_v;
     rename_length rename_l = { 0, 0 };
     modify_vector modify_v;
     modify_length modify_l = 0;
+    bool untracked_start = false;
+    untracked_vector untracked_v;
+    untracked_length untracked_l = 0;
 
     for (std::string line; std::getline(input, line);) {
         std::smatch match;
+        if (untracked_start) {
+            if (std::regex_search(line, match, others)) {
+                std::cout << "others " << line << std::endl;
+                untracked_start = false;
+                continue;
+            }
+
+            if (std::regex_search(line, match, untracked_files)) {
+                auto str = match.str(1);
+                std::replace(str.begin(), str.end(), '/', '\\');
+
+                auto found = str.find_last_of(R"(\)");
+                if (found > untracked_l) {
+                    untracked_l = static_cast<length_t>(found);
+                }
+
+                untracked_v.emplace_back(str.substr(0, found), str.substr(found + 1));
+                std::cout << "untracked " << line << std::endl;
+            }
+        }
+
         if (std::regex_search(line, match, renamed)) {
             auto oldStr = match.str(1);
             std::replace(oldStr.begin(), oldStr.end(), '/', '\\');
@@ -57,6 +86,9 @@ int main()
 
             modify_v.emplace_back(str.substr(0, found), str.substr(found + 1));
             std::cout << "modified " << str << std::endl;
+        } else if (std::regex_search(line, match, untracked)) {
+            untracked_start = true;
+            std::cout << "untracked " << line << std::endl;
         } else {
             std::cout << "unmatched " << line << std::endl;
         }
@@ -68,14 +100,26 @@ int main()
     }
     std::cout << std::endl << std::endl;
 
-    std::cout << R"(set src_dir=h:\os1\src)" << std::endl;
-    std::cout << R"(set dst_dir=\\tcwin04\UserData\MS\jjlee\assessments_dot_net_wpt_16\src)" << std::endl;
-    std::cout << std::endl << std::endl;
+    std::cout << R"(set src_dir=g:\os6\src)" << std::endl;
+    std::cout << R"(set dst_dir=\\tcwin04\UserData\MS\jjlee\ee_anaheim_browsing_wcos_5\src)" << std::endl;
+    std::cout << std::endl;
 
     for (const auto& e : modify_v) {
         std::cout << R"(robocopy %src_dir%\)" << std::left << std::setw(modify_l) << e.first <<
             R"( %dst_dir%\)" << std::left << std::setw(modify_l) << e.first << " " << e.second << std::endl;
     }
+    std::cout << std::endl;
+
+    for (const auto& e : untracked_v) {
+        if (e.second.empty()) {
+            std::cout << R"(robocopy %src_dir%\)" << std::left << std::setw(untracked_l) << e.first <<
+                R"( %dst_dir%\)" << std::left << std::setw(untracked_l) << e.first << " " << "/e" << std::endl;
+        } else {
+            std::cout << R"(robocopy %src_dir%\)" << std::left << std::setw(untracked_l) << e.first <<
+                R"( %dst_dir%\)" << std::left << std::setw(untracked_l) << e.first << " " << e.second << std::endl;
+        }
+    }
+    std::cout << std::endl;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
