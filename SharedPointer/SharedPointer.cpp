@@ -5,9 +5,18 @@
 
 using byte = unsigned char;
 
-void f(byte* /*buffer*/)
+void f(const std::vector<byte>& /*buffer*/)
 {
 }
+
+template <typename T>
+class MyAlloc : public std::allocator<T>
+{
+    using base = std::allocator<T>;
+    using base::base;
+
+public:
+};
 
 class X
 {
@@ -15,11 +24,15 @@ public:
     static constexpr int BUFFER_SIZE = 1000;
 
     X() :
-        m_shared_ptr(std::make_shared<byte>(BUFFER_SIZE))
+        m_shared_ptr(std::allocate_shared<std::vector<byte>, std::allocator>(BUFFER_SIZE))
     {
     }
 
-    void method()
+    ~X()
+    {
+    }
+
+    void fun()
     {
         auto sptr = m_shared_ptr; // sptr responsible for dispatch to diff threads
         std::vector<std::thread> threads;
@@ -28,10 +41,9 @@ public:
         {
             threads.push_back(std::thread([sptr]() // copied to 4 threads
                 {
-                    f(sptr.get());
+                    f(*sptr.get());
                 }));
         }
-
 
         for (int i = 0; i < 4; ++i)
         {
@@ -40,12 +52,12 @@ public:
     }
 
 private:
-    std::shared_ptr<byte> m_shared_ptr;
+    std::shared_ptr<std::vector<byte>> m_shared_ptr;
 };
 
 int main()
 {
     X x;
 
-    x.method();
+    x.fun();
 }
