@@ -100,8 +100,8 @@ int main()
     }
     std::cout << std::endl << std::endl;
 
-    std::cout << R"(set src_dir=g:\os6\src)" << std::endl;
-    std::cout << R"(set dst_dir=\\tcwin04\UserData\MS\jjlee\ee_anaheim_browsing_wcos_5\src)" << std::endl;
+    std::cout << R"(set src_dir=g:\os8\src)" << std::endl;
+    std::cout << R"(set dst_dir=\\tcwin04\UserData\MS\jjlee\office_web_power_18\src)" << std::endl;
     std::cout << std::endl;
 
     for (const auto& e : modify_v) {

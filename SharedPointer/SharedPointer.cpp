@@ -3,28 +3,19 @@
 #include <memory>
 #include <thread>
 
-using byte = unsigned char;
+using BYTE = unsigned char;
 
-void f(const std::vector<byte>& /*buffer*/)
+void f(BYTE buffer[])
 {
 }
-
-template <typename T>
-class MyAlloc : public std::allocator<T>
-{
-    using base = std::allocator<T>;
-    using base::base;
-
-public:
-};
 
 class X
 {
 public:
-    static constexpr int BUFFER_SIZE = 1000;
+    static constexpr int HD_BLOCK_SIZE = 4096;
 
     X() :
-        m_shared_ptr(std::allocate_shared<std::vector<byte>, std::allocator>(BUFFER_SIZE))
+        m_shared_ptr(std::make_shared<BYTE[]>(HD_BLOCK_SIZE))
     {
     }
 
@@ -41,7 +32,7 @@ public:
         {
             threads.push_back(std::thread([sptr]() // copied to 4 threads
                 {
-                    f(*sptr.get());
+                    f(sptr.get());
                 }));
         }
 
@@ -52,7 +43,7 @@ public:
     }
 
 private:
-    std::shared_ptr<std::vector<byte>> m_shared_ptr;
+    std::shared_ptr<BYTE[]> m_shared_ptr;
 };
 
 int main()
