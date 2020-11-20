@@ -100,8 +100,8 @@ int main()
     }
     std::cout << std::endl << std::endl;
 
-    std::cout << R"(set src_dir=g:\os8\src)" << std::endl;
-    std::cout << R"(set dst_dir=\\tcwin04\UserData\MS\jjlee\office_web_power_18\src)" << std::endl;
+    std::cout << R"(set src_dir=g:\os7\src)" << std::endl;
+    std::cout << R"(set dst_dir=\\tcwin04\UserData\MS\jjlee\auto_edge_driver_version_7\src)" << std::endl;
     std::cout << std::endl;
 
     for (const auto& e : modify_v) {
@@ -119,6 +119,13 @@ int main()
                 R"( %dst_dir%\)" << std::left << std::setw(untracked_l) << e.first << " " << e.second << std::endl;
         }
     }
+
+    std::cout << R"(subst z: %dst_dir%)" << std::endl;
+    std::cout << R"(z:)" << std::endl;
+    std::cout << R"(del /s /q buildfre.*)" << std::endl;
+    std::cout << R"(del /s /q buildchk.*)" << std::endl;
+    std::cout << R"(c:)" << std::endl;
+    std::cout << R"(subst z: /d)" << std::endl;
     std::cout << std::endl;
 }
 
