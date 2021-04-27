@@ -19,12 +19,16 @@ int main()
     using file_name = std::string;
     using modify_vector = std::vector<std::pair<dir_name, file_name>>;
     using modify_length = length_t;
+    using delete_vector = std::vector<file_name>;
+    using delete_length = length_t;
     using untracked_vector = std::vector<std::pair<dir_name, file_name>>;
     using untracked_length = length_t;
 
     std::ifstream input(R"(C:\Users\v-jialee\Documents\test.txt)", std::ifstream::in);
     std::regex renamed(R"(^\s+renamed:\s*(\S+)\s*->\s*(\S+)\s*$)");
     std::regex modified(R"(^\s+modified:\s*(\S+)\s*$)");
+    std::regex new_file(R"(^\s+new file:\s*(\S+)\s*$)");
+    std::regex deleted(R"(^\s+deleted:\s*(\S+)\s*$)");
     std::regex untracked(R"(^Untracked files:\s*$)");
     std::regex untracked_files(R"(^\s+(\S+)\s*$)");
     std::regex others(R"(^\S+)");
@@ -33,6 +37,8 @@ int main()
     rename_length rename_l = { 0, 0 };
     modify_vector modify_v;
     modify_length modify_l = 0;
+    delete_vector delete_v;
+    delete_length delete_l = 0;
     bool untracked_start = false;
     untracked_vector untracked_v;
     untracked_length untracked_l = 0;
@@ -86,6 +92,24 @@ int main()
 
             modify_v.emplace_back(str.substr(0, found), str.substr(found + 1));
             std::cout << "modified " << str << std::endl;
+        }
+        else if (std::regex_search(line, match, new_file)) {
+            auto str = match.str(1);
+            std::replace(str.begin(), str.end(), '/', '\\');
+
+            auto found = str.find_last_of(R"(\)");
+            if (found > modify_l) {
+                modify_l = static_cast<length_t>(found);
+            }
+
+            modify_v.emplace_back(str.substr(0, found), str.substr(found + 1));
+            std::cout << "new file " << str << std::endl;
+        }
+        else if (std::regex_search(line, match, deleted)) {
+            auto str = match.str(1);
+            std::replace(str.begin(), str.end(), '/', '\\');
+            delete_v.emplace_back(str);
+            std::cout << "deleted " << str << std::endl;
         } else if (std::regex_search(line, match, untracked)) {
             untracked_start = true;
             std::cout << "untracked " << line << std::endl;
@@ -100,13 +124,18 @@ int main()
     }
     std::cout << std::endl << std::endl;
 
-    std::cout << R"(set src_dir=g:\os7\src)" << std::endl;
-    std::cout << R"(set dst_dir=\\tcwin04\UserData\MS\jjlee\auto_edge_driver_version_7\src)" << std::endl;
+    std::cout << R"(set src_dir=g:\os3\src)" << std::endl;
+    std::cout << R"(set dst_dir=g:\os\src)" << std::endl;
     std::cout << std::endl;
 
     for (const auto& e : modify_v) {
         std::cout << R"(robocopy %src_dir%\)" << std::left << std::setw(modify_l) << e.first <<
             R"( %dst_dir%\)" << std::left << std::setw(modify_l) << e.first << " " << e.second << std::endl;
+    }
+    std::cout << std::endl;
+
+    for (const auto& e : delete_v) {
+        std::cout << R"(git rm %src_dir%\)" << std::left << std::setw(modify_l) << e << std::endl;
     }
     std::cout << std::endl;
 
@@ -120,6 +149,8 @@ int main()
         }
     }
 
+    std::cout << std::endl;
+    std::cout << R"(subst z: /d)" << std::endl;
     std::cout << R"(subst z: %dst_dir%)" << std::endl;
     std::cout << R"(z:)" << std::endl;
     std::cout << R"(del /s /q buildfre.*)" << std::endl;
