@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <set>
 #include <utility>
 #include <fstream>
 #include <regex>
@@ -124,13 +125,18 @@ int main()
     }
     std::cout << std::endl << std::endl;
 
-    std::cout << R"(set src_dir=g:\os3\src)" << std::endl;
-    std::cout << R"(set dst_dir=g:\os\src)" << std::endl;
+    std::cout << R"(set src_dir=g:\os7\src)" << std::endl;
+//  std::cout << R"(set dst_dir=g:\os8\src)" << std::endl;
+    std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\teams_scenario_options_5\src)" << std::endl;
+//  std::cout << R"(set dst_dir=\\tcwin01\Win10Build\j\src)" << std::endl;
+    std::cout << R"(subst z: /d)" << std::endl;
+    std::cout << R"(md "%dst_dir%")" << std::endl;
+    std::cout << R"(subst z: "%dst_dir%")" << std::endl;
     std::cout << std::endl;
 
     for (const auto& e : modify_v) {
         std::cout << R"(robocopy %src_dir%\)" << std::left << std::setw(modify_l) << e.first <<
-            R"( %dst_dir%\)" << std::left << std::setw(modify_l) << e.first << " " << e.second << std::endl;
+            R"( z:\)" << std::left << std::setw(modify_l) << e.first << " " << e.second << std::endl;
     }
     std::cout << std::endl;
 
@@ -142,21 +148,54 @@ int main()
     for (const auto& e : untracked_v) {
         if (e.second.empty()) {
             std::cout << R"(robocopy %src_dir%\)" << std::left << std::setw(untracked_l) << e.first <<
-                R"( %dst_dir%\)" << std::left << std::setw(untracked_l) << e.first << " " << "/e" << std::endl;
+                R"( z:\)" << std::left << std::setw(untracked_l) << e.first << " " << "/e" << std::endl;
         } else {
             std::cout << R"(robocopy %src_dir%\)" << std::left << std::setw(untracked_l) << e.first <<
-                R"( %dst_dir%\)" << std::left << std::setw(untracked_l) << e.first << " " << e.second << std::endl;
+                R"( z:\)" << std::left << std::setw(untracked_l) << e.first << " " << e.second << std::endl;
         }
     }
 
+    // cleanup task
     std::cout << std::endl;
-    std::cout << R"(subst z: /d)" << std::endl;
-    std::cout << R"(subst z: %dst_dir%)" << std::endl;
     std::cout << R"(z:)" << std::endl;
-    std::cout << R"(del /s /q buildfre.*)" << std::endl;
-    std::cout << R"(del /s /q buildchk.*)" << std::endl;
-    std::cout << R"(c:)" << std::endl;
-    std::cout << R"(subst z: /d)" << std::endl;
+    std::set<dir_name> clean_up_dirs;
+
+    for (const auto& e : modify_v) {
+        bool already_in = false;
+        for (const auto& m: clean_up_dirs) {
+            if (e.first.starts_with(m)) {
+                already_in = true;
+            }
+        }
+        if (!already_in)
+        {
+            clean_up_dirs.insert(e.first);
+        }
+    }
+
+    for (const auto& e: untracked_v) {
+        bool already_in = false;
+        for (const auto& m : clean_up_dirs) {
+            if (e.first.starts_with(m)) {
+                already_in = true;
+            }
+        }
+        if (!already_in)
+        {
+            clean_up_dirs.insert(e.first);
+        }
+    }
+
+    std::cout << R"(del C:\Users\v-jialee\Documents\xx.txt)" << std::endl;
+
+    for (const auto& e: clean_up_dirs) {
+        std::cout << R"(cd z:\)" << e << std::endl;
+        std::cout << R"(del /s /q buildfre*)" << std::endl;
+        std::cout << R"(del /s /q buildchk*)" << std::endl;
+        std::cout << R"(del /s /q SourcesCop*)" << std::endl;
+        std::cout << R"(dir /ad /s /b >> C:\Users\v-jialee\Documents\xx.txt)" << std::endl;
+    }
+
     std::cout << std::endl;
 }
 

@@ -30,7 +30,7 @@ public:
 
         for (int i = 0; i < 4; ++i)
         {
-            threads.push_back(std::thread([sptr]() // copied to 4 threads
+            threads.push_back(std::thread([sptr]() // copied to 4 threads
                 {
                     f(sptr.get());
                 }));
