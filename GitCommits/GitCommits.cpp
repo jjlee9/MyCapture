@@ -125,9 +125,12 @@ int main()
     }
     std::cout << std::endl << std::endl;
 
-    std::cout << R"(set src_dir=g:\os3\src)" << std::endl;
-    std::cout << R"(set dst_dir=i:\os3\src)" << std::endl;
-//  std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\teams_scenario_options_11\src)" << std::endl;
+//  std::cout << R"(set src_dir=g:\w2\src)" << std::endl;
+    std::cout << R"(set src_dir=g:\app2)" << std::endl;
+//  std::cout << R"(set dst_dir=g:\w2\src)" << std::endl;
+//  std::cout << R"(set dst_dir=g:\app2)" << std::endl;
+//  std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\ac_web_browsing_3\src)" << std::endl;
+    std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\ac_web_browsing_3\atsrc)" << std::endl;
 //  std::cout << R"(set dst_dir=\\tcwin01\Win10Build\j\src)" << std::endl;
     std::cout << R"(c:)" << std::endl;
     std::cout << R"(subst z: /d)" << std::endl;
