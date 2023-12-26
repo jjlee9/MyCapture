@@ -25,7 +25,7 @@ int main()
     using untracked_vector = std::vector<std::pair<dir_name, file_name>>;
     using untracked_length = length_t;
 
-    std::ifstream input(R"(C:\Users\v-jialee\Documents\test.txt)", std::ifstream::in);
+    std::ifstream input(R"(E:\Doc\test.txt)", std::ifstream::in);
     std::regex renamed(R"(^\s+renamed:\s*(\S+)\s*->\s*(\S+)\s*$)");
     std::regex modified(R"(^\s+modified:\s*(\S+)\s*$)");
     std::regex new_file(R"(^\s+new file:\s*(\S+)\s*$)");
@@ -87,11 +87,19 @@ int main()
             std::replace(str.begin(), str.end(), '/', '\\');
 
             auto found = str.find_last_of(R"(\)");
-            if (found > modify_l) {
-                modify_l = static_cast<length_t>(found);
-            }
+            if (found != std::string::npos)
+            {
+                if (found > modify_l) {
+                    modify_l = static_cast<length_t>(found);
+                }
 
-            modify_v.emplace_back(str.substr(0, found), str.substr(found + 1));
+                modify_v.emplace_back(str.substr(0, found), str.substr(found + 1));
+            }
+            else
+            {
+                modify_l = static_cast<length_t>(0);
+                modify_v.emplace_back(std::string(""), str);
+            }
             std::cout << "modified " << str << std::endl;
         }
         else if (std::regex_search(line, match, new_file)) {
@@ -125,13 +133,13 @@ int main()
     }
     std::cout << std::endl << std::endl;
 
-//  std::cout << R"(set src_dir=g:\w2\src)" << std::endl;
-    std::cout << R"(set src_dir=g:\app2)" << std::endl;
-//  std::cout << R"(set dst_dir=g:\w2\src)" << std::endl;
-//  std::cout << R"(set dst_dir=g:\app2)" << std::endl;
-//  std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\ac_web_browsing_3\src)" << std::endl;
-    std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\ac_web_browsing_3\atsrc)" << std::endl;
-//  std::cout << R"(set dst_dir=\\tcwin01\Win10Build\j\src)" << std::endl;
+//  std::cout << R"(set src_dir=g:\m1\src)" << std::endl;
+    std::cout << R"(set src_dir=g:\sp1)" << std::endl;
+//  std::cout << R"(set dst_dir=g:\o6\src)" << std::endl;
+    std::cout << R"(set dst_dir=h:\sp1)" << std::endl;
+//  std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\multiple_join_meeting_2\src)" << std::endl;
+//  std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\productivity_1\pssrc)" << std::endl;
+//  std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\multiple_join_meeting_2\atsrc)" << std::endl;
     std::cout << R"(c:)" << std::endl;
     std::cout << R"(subst z: /d)" << std::endl;
     std::cout << R"(md "%dst_dir%")" << std::endl;
@@ -190,14 +198,14 @@ int main()
         }
     }
 
-    std::cout << R"(del C:\Users\v-jialee\Documents\xx.txt)" << std::endl;
+    std::cout << R"(del E:\Doc\xx.txt)" << std::endl;
 
     for (const auto& e: clean_up_dirs) {
         std::cout << R"(cd z:\)" << e << std::endl;
         std::cout << R"(del /s /q buildfre*)" << std::endl;
         std::cout << R"(del /s /q buildchk*)" << std::endl;
         std::cout << R"(del /s /q SourcesCop*)" << std::endl;
-        std::cout << R"(dir /ad /s /b >> C:\Users\v-jialee\Documents\xx.txt)" << std::endl;
+        std::cout << R"(dir /ad /s /b >> E:\Doc\xx.txt)" << std::endl;
     }
 
     std::cout << std::endl;
