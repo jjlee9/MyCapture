@@ -133,13 +133,30 @@ int main()
     }
     std::cout << std::endl << std::endl;
 
-//  std::cout << R"(set src_dir=g:\m1\src)" << std::endl;
-    std::cout << R"(set src_dir=g:\sp1)" << std::endl;
-//  std::cout << R"(set dst_dir=g:\o6\src)" << std::endl;
-    std::cout << R"(set dst_dir=h:\sp1)" << std::endl;
-//  std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\multiple_join_meeting_2\src)" << std::endl;
-//  std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\productivity_1\pssrc)" << std::endl;
-//  std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\multiple_join_meeting_2\atsrc)" << std::endl;
+
+    // source directory ******
+    // os repository
+    // std::cout << R"(set src_dir=f:\s5\src)" << std::endl;
+    // ado repository
+    std::cout << R"(set src_dir=g:\pp5)" << std::endl;
+    // source directory ******
+
+
+    // destination directory ******
+    // os repository
+    // std::cout << R"(set dst_dir=f:\s5\src)" << std::endl;
+    // ado repository
+    // std::cout << R"(set dst_dir=f:\wp6)" << std::endl;
+
+    // os repository over one-drive
+    // std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\new_multiple_join_1\src)" << std::endl;
+    // ado repository over one-drive
+    std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\msa_teams_meeting_6\atsrc)" << std::endl;
+    // std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\new_multiple_join_1\AARVsrc)" << std::endl;
+    // std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\new_multiple_join_1\PSsrc)" << std::endl;
+    // destination directory ******
+
+
     std::cout << R"(c:)" << std::endl;
     std::cout << R"(subst z: /d)" << std::endl;
     std::cout << R"(md "%dst_dir%")" << std::endl;
