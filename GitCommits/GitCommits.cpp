@@ -136,24 +136,26 @@ int main()
 
     // source directory ******
     // os repository
-    // std::cout << R"(set src_dir=f:\s5\src)" << std::endl;
+    // std::cout << R"(set src_dir=g:\o5\src)" << std::endl;
     // ado repository
-    std::cout << R"(set src_dir=g:\pp5)" << std::endl;
+    // std::cout << R"(set src_dir=g:\op7)" << std::endl;
+    // ado repository over one-drive
+    std::cout << R"(set src_dir=C:\Users\v-jialee\OneDrive - Microsoft\1280x720_outlook_stay_sign_in_not_in_view\atsrc)" << std::endl;
     // source directory ******
 
 
     // destination directory ******
     // os repository
-    // std::cout << R"(set dst_dir=f:\s5\src)" << std::endl;
+    // std::cout << R"(set dst_dir=g:\x8\src)" << std::endl;
     // ado repository
-    // std::cout << R"(set dst_dir=f:\wp6)" << std::endl;
+    std::cout << R"(set dst_dir=g:\fp1)" << std::endl;
 
     // os repository over one-drive
-    // std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\new_multiple_join_1\src)" << std::endl;
+    // std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\1280x720_outlook_stay_sign_in_not_in_view\src)" << std::endl;
     // ado repository over one-drive
-    std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\msa_teams_meeting_6\atsrc)" << std::endl;
-    // std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\new_multiple_join_1\AARVsrc)" << std::endl;
-    // std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\new_multiple_join_1\PSsrc)" << std::endl;
+    // std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\1280x720_outlook_stay_sign_in_not_in_view\atsrc)" << std::endl;
+    // std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\new_multi_join_2\AARVsrc)" << std::endl;
+    // std::cout << R"(set dst_dir=C:\Users\v-jialee\OneDrive - Microsoft\new_multi_join_2\PSsrc)" << std::endl;
     // destination directory ******
 
 
@@ -164,8 +166,8 @@ int main()
     std::cout << std::endl;
 
     for (const auto& e : modify_v) {
-        std::cout << R"(robocopy %src_dir%\)" << std::left << std::setw(modify_l) << e.first <<
-            R"( z:\)" << std::left << std::setw(modify_l) << e.first << " " << e.second << std::endl;
+        std::cout << R"(robocopy "%src_dir%\)" << std::left << std::setw(modify_l + 1) << (e.first + R"(")") <<
+            R"( "z:\)" << std::left << std::setw(modify_l + 1) << (e.first + R"(")") << " " << e.second << std::endl;
     }
     std::cout << std::endl;
 
@@ -176,11 +178,11 @@ int main()
 
     for (const auto& e : untracked_v) {
         if (e.second.empty()) {
-            std::cout << R"(robocopy %src_dir%\)" << std::left << std::setw(untracked_l) << e.first <<
-                R"( z:\)" << std::left << std::setw(untracked_l) << e.first << " " << "/e" << std::endl;
+            std::cout << R"(robocopy "%src_dir%\)" << std::left << std::setw(untracked_l) << e.first <<
+                R"( "z:\)" << std::left << std::setw(untracked_l + 1) << (e.first + R"(")") << " " << "/e" << std::endl;
         } else {
-            std::cout << R"(robocopy %src_dir%\)" << std::left << std::setw(untracked_l) << e.first <<
-                R"( z:\)" << std::left << std::setw(untracked_l) << e.first << " " << e.second << std::endl;
+            std::cout << R"(robocopy "%src_dir%\)" << std::left << std::setw(untracked_l) << e.first <<
+                R"( "z:\)" << std::left << std::setw(untracked_l + 1) << (e.first + R"(")") << " " << e.second << std::endl;
         }
     }
 
